@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pigpen Signin</string>
+
+    <string name="api_base">http://pen.vegetarianbaconite.com</string>
+</resources>
