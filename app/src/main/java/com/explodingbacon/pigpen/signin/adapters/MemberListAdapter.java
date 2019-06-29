@@ -15,9 +15,11 @@ import java.util.List;
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
 
     List<Member> members;
+    OnMemberClickedListener listener;
 
-    public MemberListAdapter(List<Member> members) {
+    public MemberListAdapter(List<Member> members, OnMemberClickedListener listener) {
         this.members = members;
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,14 +42,25 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
+        Member member;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this::onClick);
             name = itemView.findViewById(R.id.name);
         }
 
         public void bind(Member member) {
+            this.member = member;
             name.setText(member.getName());
         }
+
+        public void onClick(View view) {
+            listener.onMemberClicked(member);
+        }
+    }
+
+    public interface OnMemberClickedListener {
+        void onMemberClicked(Member member);
     }
 }

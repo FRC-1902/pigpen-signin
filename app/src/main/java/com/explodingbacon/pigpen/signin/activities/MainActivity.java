@@ -1,15 +1,18 @@
 package com.explodingbacon.pigpen.signin.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.adapters.MemberListAdapter;
 import com.explodingbacon.pigpen.signin.api.models.MemberResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
+import com.explodingbacon.pigpen.signin.fragments.ApiKeyFragment;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,17 +26,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
-
-    List<Member> members;
+public class MainActivity extends AppCompatActivity implements MemberListAdapter.OnMemberClickedListener {
+    SharedPreferences prefs;
+    public static final String PREFS_KEY_APIKEY = "API_KEY";
 
     RecyclerView recycler;
     MemberListAdapter adapter;
+
+    List<Member> members;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = getPreferences(MODE_PRIVATE);
+        if (!prefs.contains(PREFS_KEY_APIKEY)) {
+            new ApiKeyFragment().show(getSupportFragmentManager(), PREFS_KEY_APIKEY);
+        }
 
         recycler = findViewById(R.id.recycler);
 
@@ -59,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     members = gson.fromJson(response.body().charStream(), MemberResponse.class).getMembers();
 
-                    adapter = new MemberListAdapter(members);
+                    adapter = new MemberListAdapter(members, MainActivity.this);
                     recycler.setAdapter(adapter);
                     recycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                 });
@@ -67,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static class MembersResponse {
-
+    @Override
+    public void onMemberClicked(Member member) {
+        Toast.makeText(this, member.getName(), Toast.LENGTH_SHORT).show();
     }
 }
