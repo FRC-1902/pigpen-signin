@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.adapters.MemberListAdapter;
 import com.explodingbacon.pigpen.signin.api.models.MemberResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
+import com.explodingbacon.pigpen.signin.fragments.AddMemberFragment;
 import com.explodingbacon.pigpen.signin.fragments.ApiKeyFragment;
 import com.explodingbacon.pigpen.signin.fragments.PunchFragment;
 import com.google.gson.Gson;
@@ -26,12 +29,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements MemberListAdapter.OnMemberClickedListener {
+public class MainActivity extends AppCompatActivity implements MemberListAdapter.OnMemberClickedListener, AddMemberFragment.MemberAddedListener {
     SharedPreferences prefs;
     public static final String PREFS_REPO_NAME = "PIGPEN";
     public static final String PREFS_KEY_APIKEY = "API_KEY";
     public static final String FRAGMENT_API = "api";
     public static final String FRAGMENT_PUNCH = "punch";
+    public static final String FRAGMENT_ADD = "add";
 
     RecyclerView recycler;
     MemberListAdapter adapter;
@@ -50,10 +54,25 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
 
         recycler = findViewById(R.id.recycler);
 
-        makeCall();
+        getMembers();
     }
 
-    private void makeCall() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.member_add) {
+            AddMemberFragment.getInstance(this).show(getSupportFragmentManager(), FRAGMENT_ADD);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void getMembers() {
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(getString(R.string.api_base) + "/api/getmembers")
@@ -83,5 +102,10 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
     @Override
     public void onMemberClicked(Member member) {
         PunchFragment.getInstance(member).show(getSupportFragmentManager(), FRAGMENT_PUNCH);
+    }
+
+    @Override
+    public void onMemberAdded() {
+        getMembers();
     }
 }
