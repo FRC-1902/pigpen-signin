@@ -40,7 +40,9 @@ public class PunchFragment extends DialogFragment {
 
     View actionContainer;
     View resultsContainer;
+    View divider;
     View totalsContainer;
+
     TextView memberName;
     TextView punchResults;
     TextView punchDuration;
@@ -67,8 +69,9 @@ public class PunchFragment extends DialogFragment {
 
         getDialog().findViewById(R.id.do_punch).setOnClickListener((v) -> doPunch());
 
-        actionContainer = getDialog().findViewById(R.id.actions);
-        resultsContainer = getDialog().findViewById(R.id.results);
+        actionContainer = getDialog().findViewById(R.id.actions_container);
+        resultsContainer = getDialog().findViewById(R.id.results_container);
+        divider = getDialog().findViewById(R.id.divider);
         totalsContainer = getDialog().findViewById(R.id.totals_container);
 
         memberName = getDialog().findViewById(R.id.member_name);
@@ -166,11 +169,14 @@ public class PunchFragment extends DialogFragment {
             actionContainer.setVisibility(View.GONE);
             resultsContainer.setVisibility(View.VISIBLE);
         });
+
+        getStudentHours();
     }
 
     private void updateUiWithHoursResponse(HoursResponse hoursResponse) {
         getActivity().runOnUiThread(() -> {
             totals.setText(hoursResponse.toString());
+            divider.setVisibility(View.VISIBLE);
             totalsContainer.setVisibility(View.VISIBLE);
         });
     }

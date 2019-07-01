@@ -6,11 +6,23 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/actions"
+    <TextView
+        android:id="@+id/member_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Dominic Canora" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/actions_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/member_name">
@@ -27,11 +39,12 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/results"
+        android:id="@+id/results_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/actions"
+        app:layout_constraintTop_toBottomOf="@+id/actions_container"
         tools:layout_editor_absoluteX="16dp"
         tools:visibility="visible">
 
@@ -65,15 +78,28 @@
             tools:visibility="visible" />
     </android.support.constraint.ConstraintLayout>
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/totals_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/results_container"
+        app:layout_constraintVertical_bias="0.5"
+        tools:visibility="visible" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/totals_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/results"
+        app:layout_constraintTop_toBottomOf="@+id/results_container"
         tools:visibility="visible">
 
         <TextView
@@ -96,17 +122,5 @@
             tools:text="Build: 00:00:00\nOutreach: 00:00:00" />
 
     </android.support.constraint.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/member_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Dominic Canora" />
 
 </android.support.constraint.ConstraintLayout>
