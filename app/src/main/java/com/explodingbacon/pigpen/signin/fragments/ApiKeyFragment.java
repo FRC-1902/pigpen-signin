@@ -44,7 +44,7 @@ public class ApiKeyFragment extends DialogFragment {
 
 
     public void onDialogOk() {
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.PREFS_REPO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putString(MainActivity.PREFS_KEY_APIKEY, key.getText().toString());

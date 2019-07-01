@@ -2,4 +2,7 @@
     <string name="app_name">Pigpen Signin</string>
 
     <string name="api_base">http://pen.vegetarianbaconite.com</string>
+
+    <string name="punch_summary_format">Successfully punched %s %s at %s</string>
+    <string name="punch_duration_format">Duration: %s</string>
 </resources>
