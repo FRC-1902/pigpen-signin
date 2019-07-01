@@ -114,7 +114,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Looper.prepare();
-                Toast.makeText(getContext(), "There was an error. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "There was an error. Please try again.", Toast.LENGTH_SHORT).show();
                 Log.e("Punch", "Punch IOException", e);
             }
 
@@ -179,9 +179,5 @@ public class PunchFragment extends DialogFragment {
             divider.setVisibility(View.VISIBLE);
             totalsContainer.setVisibility(View.VISIBLE);
         });
-    }
-
-    private void viewHours() {
-        Toast.makeText(getContext(), "TODO: Show Hours for " + member.getName(), Toast.LENGTH_SHORT).show();
     }
 }
