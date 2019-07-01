@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
         }
 
         recycler = findViewById(R.id.recycler);
+        adapter = new MemberListAdapter(MainActivity.this);
+        recycler.setAdapter(adapter);
+        recycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
         getMembers();
     }
@@ -91,9 +94,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
                     Gson gson = new Gson();
                     members = gson.fromJson(response.body().charStream(), MemberResponse.class).getMembers();
 
-                    adapter = new MemberListAdapter(members, MainActivity.this);
-                    recycler.setAdapter(adapter);
-                    recycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    runOnUiThread(() -> adapter.setMembers(members));
                 });
             }
         });

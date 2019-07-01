@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.beans.Member;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
@@ -17,9 +18,14 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     List<Member> members;
     OnMemberClickedListener listener;
 
-    public MemberListAdapter(List<Member> members, OnMemberClickedListener listener) {
-        this.members = members;
+    public MemberListAdapter(OnMemberClickedListener listener) {
+        this.members = new ArrayList<>();
         this.listener = listener;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = new ArrayList<>(members);
+        notifyDataSetChanged();
     }
 
     @NonNull
