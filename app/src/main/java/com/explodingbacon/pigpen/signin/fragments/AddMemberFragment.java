@@ -96,7 +96,7 @@ public class AddMemberFragment extends DialogFragment {
                 .build();
 
         Request request = new Request.Builder()
-                .url(getString(R.string.api_base) + "/api/addmember")
+                .url(getString(R.string.api_base) + getString(R.string.api_member_add))
                 .post(body)
                 .build();
 

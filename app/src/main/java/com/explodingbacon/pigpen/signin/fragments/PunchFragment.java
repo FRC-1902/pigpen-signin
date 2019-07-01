@@ -106,7 +106,7 @@ public class PunchFragment extends DialogFragment {
                 .build();
 
         Request request = new Request.Builder()
-                .url(getString(R.string.api_base) + "/api/punch")
+                .url(getString(R.string.api_base) + getString(R.string.api_do_punch))
                 .post(requestBody)
                 .build();
 
@@ -133,7 +133,7 @@ public class PunchFragment extends DialogFragment {
     private void getStudentHours() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(getString(R.string.api_base) + "/api/gethours?member=" + member.getId())
+                .url(getString(R.string.api_base) + String.format(getString(R.string.api_member_hours_format), member.getId()))
                 .get()
                 .build();
 

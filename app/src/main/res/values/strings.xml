@@ -2,6 +2,11 @@
     <string name="app_name">Pigpen Signin</string>
 
     <string name="api_base">http://pen.vegetarianbaconite.com</string>
+    <string name="api_do_punch">/api/punch</string>
+    <string name="api_member_list">/api/members/all</string>
+    <string name="api_member_add">/api/members/add</string>
+    <string name="api_member_hours_format">/api/member/%d/hours</string>
+    <string name="api_member_signedin_format">/api/member/%d/signedin</string>
 
     <string name="punch_summary_format">Successfully punched %s %s at %s</string>
     <string name="punch_duration_format">Duration: %s</string>

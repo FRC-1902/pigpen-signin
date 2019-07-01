@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
     private void getMembers() {
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
-                .url(getString(R.string.api_base) + "/api/getmembers")
+                .url(getString(R.string.api_base) + getString(R.string.api_member_list))
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
