@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.activities.MainActivity;
+import com.explodingbacon.pigpen.signin.api.models.HoursResponse;
 import com.explodingbacon.pigpen.signin.api.models.PunchResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
 import com.google.gson.Gson;
@@ -39,8 +40,11 @@ public class PunchFragment extends DialogFragment {
 
     View actionContainer;
     View resultsContainer;
+    View totalsContainer;
+    TextView memberName;
     TextView punchResults;
     TextView punchDuration;
+    TextView totals;
 
     public static PunchFragment getInstance(Member member) {
         PunchFragment instance = new PunchFragment();
@@ -62,19 +66,25 @@ public class PunchFragment extends DialogFragment {
         super.onStart();
 
         getDialog().findViewById(R.id.do_punch).setOnClickListener((v) -> doPunch());
-        getDialog().findViewById(R.id.do_view_hours).setOnClickListener((v) -> viewHours());
 
         actionContainer = getDialog().findViewById(R.id.actions);
         resultsContainer = getDialog().findViewById(R.id.results);
+        totalsContainer = getDialog().findViewById(R.id.totals_container);
+
+        memberName = getDialog().findViewById(R.id.member_name);
         punchResults = getDialog().findViewById(R.id.punch_result);
         punchDuration = getDialog().findViewById(R.id.duration);
+        totals = getDialog().findViewById(R.id.totals);
+
+        memberName.setText(member.getName());
+
+        getStudentHours();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(member.getName())
                 .setCancelable(true)
                 .setView(R.layout.fragment_punch)
                 .setNegativeButton("Close", null)
@@ -115,7 +125,31 @@ public class PunchFragment extends DialogFragment {
                 }
             }
         });
+    }
 
+    private void getStudentHours() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(getString(R.string.api_base) + "/api/gethours?member=" + member.getId())
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("Hours", "Hours IOException", e);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    HoursResponse hoursResponse = new Gson().fromJson(response.body().charStream(), HoursResponse.class);
+                    updateUiWithHoursResponse(hoursResponse);
+                } else {
+                    Log.e("Hours Reponse", "Non-200 response: " + response.toString());
+                }
+            }
+        });
     }
 
     private void updateUiWithPunchResponse(PunchResponse response) {
@@ -131,6 +165,13 @@ public class PunchFragment extends DialogFragment {
 
             actionContainer.setVisibility(View.GONE);
             resultsContainer.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void updateUiWithHoursResponse(HoursResponse hoursResponse) {
+        getActivity().runOnUiThread(() -> {
+            totals.setText(hoursResponse.toString());
+            totalsContainer.setVisibility(View.VISIBLE);
         });
     }
 
