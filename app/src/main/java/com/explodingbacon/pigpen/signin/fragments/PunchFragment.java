@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.activities.MainActivity;
 import com.explodingbacon.pigpen.signin.api.models.HoursResponse;
 import com.explodingbacon.pigpen.signin.api.models.PunchResponse;
+import com.explodingbacon.pigpen.signin.api.models.SignedInResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
 import com.google.gson.Gson;
 
@@ -43,6 +45,8 @@ public class PunchFragment extends DialogFragment {
     View divider;
     View totalsContainer;
 
+    Button doPunchButton;
+
     TextView memberName;
     TextView punchResults;
     TextView punchDuration;
@@ -67,7 +71,7 @@ public class PunchFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
 
-        getDialog().findViewById(R.id.do_punch).setOnClickListener((v) -> doPunch());
+        doPunchButton = getDialog().findViewById(R.id.do_punch);
 
         actionContainer = getDialog().findViewById(R.id.actions_container);
         resultsContainer = getDialog().findViewById(R.id.results_container);
@@ -79,9 +83,11 @@ public class PunchFragment extends DialogFragment {
         punchDuration = getDialog().findViewById(R.id.duration);
         totals = getDialog().findViewById(R.id.totals);
 
+        doPunchButton.setOnClickListener((v) -> doPunch());
         memberName.setText(member.getName());
 
         getStudentHours();
+        getStudentPunchStatus();
     }
 
     @NonNull
@@ -155,6 +161,31 @@ public class PunchFragment extends DialogFragment {
         });
     }
 
+    private void getStudentPunchStatus() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(getString(R.string.api_base) + String.format(getString(R.string.api_member_signedin_format), member.getId()))
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("Signed In Status", "Signed In Status IOException", e);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    SignedInResponse signedInResponse = new Gson().fromJson(response.body().charStream(), SignedInResponse.class);
+                    updateUiWithSignedInResponse(signedInResponse);
+                } else {
+                    Log.e("Hours Reponse", "Non-200 response: " + response.toString());
+                }
+            }
+        });
+    }
+
     private void updateUiWithPunchResponse(PunchResponse response) {
         getActivity().runOnUiThread(() -> {
             punchResults.setText(String.format(getString(R.string.punch_summary_format),
@@ -178,6 +209,13 @@ public class PunchFragment extends DialogFragment {
             totals.setText(hoursResponse.toString());
             divider.setVisibility(View.VISIBLE);
             totalsContainer.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void updateUiWithSignedInResponse(SignedInResponse signedInResponse) {
+        getActivity().runOnUiThread(() -> {
+            doPunchButton.setText(signedInResponse.getIsSignedIn() ? "Punch Out" : "Punch In");
+            actionContainer.setVisibility(View.VISIBLE);
         });
     }
 }
