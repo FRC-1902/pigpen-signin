@@ -1,5 +1,6 @@
 package com.explodingbacon.pigpen.signin.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,6 +38,8 @@ import okhttp3.Response;
 
 public class PunchFragment extends DialogFragment {
 
+    Activity activity;
+
     Member member;
     String secret;
 
@@ -63,7 +66,11 @@ public class PunchFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setCancelable(true);
 
-        SharedPreferences prefs = getContext().getSharedPreferences(MainActivity.PREFS_REPO_NAME, Context.MODE_PRIVATE);
+        if ((activity = getActivity()) == null) {
+            dismiss();
+        }
+
+        SharedPreferences prefs = activity.getSharedPreferences(MainActivity.PREFS_REPO_NAME, Context.MODE_PRIVATE);
         secret = prefs.getString(MainActivity.PREFS_KEY_APIKEY, null);
     }
 
@@ -93,7 +100,7 @@ public class PunchFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = new AlertDialog.Builder(getContext())
+        Dialog dialog = new AlertDialog.Builder(activity)
                 .setCancelable(true)
                 .setView(R.layout.fragment_punch)
                 .setNegativeButton("Close", null)
@@ -120,7 +127,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Looper.prepare();
-                Toast.makeText(getActivity(), "There was an error. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "There was an error. Please try again.", Toast.LENGTH_SHORT).show();
                 Log.e("Punch", "Punch IOException", e);
             }
 
@@ -187,7 +194,7 @@ public class PunchFragment extends DialogFragment {
     }
 
     private void updateUiWithPunchResponse(PunchResponse response) {
-        getActivity().runOnUiThread(() -> {
+        activity.runOnUiThread(() -> {
             punchResults.setText(String.format(getString(R.string.punch_summary_format),
                     response.getMember(), response.getPunch(), response.getTime()));
 
@@ -205,7 +212,7 @@ public class PunchFragment extends DialogFragment {
     }
 
     private void updateUiWithHoursResponse(HoursResponse hoursResponse) {
-        getActivity().runOnUiThread(() -> {
+        activity.runOnUiThread(() -> {
             totals.setText(hoursResponse.toString());
             divider.setVisibility(View.VISIBLE);
             totalsContainer.setVisibility(View.VISIBLE);
@@ -213,7 +220,7 @@ public class PunchFragment extends DialogFragment {
     }
 
     private void updateUiWithSignedInResponse(SignedInResponse signedInResponse) {
-        getActivity().runOnUiThread(() -> {
+        activity.runOnUiThread(() -> {
             doPunchButton.setText(signedInResponse.getIsSignedIn() ? "Punch Out" : "Punch In");
             actionContainer.setVisibility(View.VISIBLE);
         });
