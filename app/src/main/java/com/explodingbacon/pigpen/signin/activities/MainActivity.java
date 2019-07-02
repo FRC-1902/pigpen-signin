@@ -22,6 +22,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
 
     List<Member> members;
 
+    Timer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +61,14 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
         adapter = new MemberListAdapter(MainActivity.this);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getMembers();
+            }
+        }, 0, TimeUnit.MINUTES.toMillis(1));
 
         getMembers();
     }
