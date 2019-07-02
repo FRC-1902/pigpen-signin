@@ -103,12 +103,10 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                runOnUiThread(() -> {
-                    Gson gson = new Gson();
-                    members = gson.fromJson(response.body().charStream(), MemberResponse.class).getMembers();
+                Gson gson = new Gson();
+                members = gson.fromJson(response.body().charStream(), MemberResponse.class).getMembers();
 
-                    runOnUiThread(() -> adapter.setMembers(members));
-                });
+                runOnUiThread(() -> adapter.setMembers(members));
             }
         });
     }
