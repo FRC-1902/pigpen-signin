@@ -21,6 +21,8 @@ public class HoursResponse {
     @SerializedName("othr")
     String other;
 
+    String total;
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -36,6 +38,9 @@ public class HoursResponse {
         }
         if (other != null) {
             builder.append("Other: ").append(other).append('\n');
+        }
+        if (total != null) {
+            builder.append("---\n").append("Total This Season: ").append(total).append('\n');
         }
 
         return builder.toString().trim(); //Remove trailing newline
