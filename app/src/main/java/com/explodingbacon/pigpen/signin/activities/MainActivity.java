@@ -2,15 +2,16 @@ package com.explodingbacon.pigpen.signin.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.adapters.MemberListAdapter;
+import com.explodingbacon.pigpen.signin.adapters.MemberListPager;
 import com.explodingbacon.pigpen.signin.api.models.MemberResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
 import com.explodingbacon.pigpen.signin.fragments.AddMemberFragment;
@@ -21,7 +22,6 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -40,10 +40,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
     public static final String FRAGMENT_PUNCH = "punch";
     public static final String FRAGMENT_ADD = "add";
 
-    RecyclerView recycler;
-    MemberListAdapter adapter;
-
-    List<Member> members;
+    MemberListPager pagerAdapter;
 
     Timer timer;
 
@@ -57,10 +54,12 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
             new ApiKeyFragment().show(getSupportFragmentManager(), FRAGMENT_API);
         }
 
-        recycler = findViewById(R.id.recycler);
-        adapter = new MemberListAdapter(MainActivity.this);
-        recycler.setAdapter(adapter);
-        recycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        pagerAdapter = new MemberListPager(getSupportFragmentManager());
+
+        ViewPager pager = findViewById(R.id.pager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        pager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(pager);
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -69,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
                 getMembers();
             }
         }, 0, TimeUnit.MINUTES.toMillis(1));
-
-        getMembers();
     }
 
     @Override
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
         return super.onOptionsItemSelected(item);
     }
 
-    private void getMembers() {
+    public void getMembers() {
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(getString(R.string.api_base) + getString(R.string.api_member_list))
@@ -104,9 +101,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Gson gson = new Gson();
-                members = gson.fromJson(response.body().string(), MemberResponse.class).getMembers();
-
-                runOnUiThread(() -> adapter.setMembers(members));
+                pagerAdapter.updateMembers(gson.fromJson(response.body().string(), MemberResponse.class).getMembers());
             }
         });
     }
