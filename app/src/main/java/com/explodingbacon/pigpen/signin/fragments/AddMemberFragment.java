@@ -111,7 +111,7 @@ public class AddMemberFragment extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
-                    AddMemberResponse addResponse = new Gson().fromJson(response.body().charStream(), AddMemberResponse.class);
+                    AddMemberResponse addResponse = new Gson().fromJson(response.body().string(), AddMemberResponse.class);
                     if (addResponse.getSuccess()) {
                         listener.onMemberAdded();
                         dismiss();

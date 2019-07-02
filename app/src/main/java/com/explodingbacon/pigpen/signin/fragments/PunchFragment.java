@@ -134,7 +134,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
-                    PunchResponse punchResponse = new Gson().fromJson(response.body().charStream(), PunchResponse.class);
+                    PunchResponse punchResponse = new Gson().fromJson(response.body().string(), PunchResponse.class);
                     updateUiWithPunchResponse(punchResponse);
                 } else {
                     Log.e("Punch Response", "Non-200 response: " + response.toString());
@@ -159,7 +159,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
-                    HoursResponse hoursResponse = new Gson().fromJson(response.body().charStream(), HoursResponse.class);
+                    HoursResponse hoursResponse = new Gson().fromJson(response.body().string(), HoursResponse.class);
                     updateUiWithHoursResponse(hoursResponse);
                 } else {
                     Log.e("Hours Reponse", "Non-200 response: " + response.toString());
@@ -184,7 +184,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
-                    SignedInResponse signedInResponse = new Gson().fromJson(response.body().charStream(), SignedInResponse.class);
+                    SignedInResponse signedInResponse = new Gson().fromJson(response.body().string(), SignedInResponse.class);
                     updateUiWithSignedInResponse(signedInResponse);
                 } else {
                     Log.e("Hours Reponse", "Non-200 response: " + response.toString());
