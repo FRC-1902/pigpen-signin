@@ -2,13 +2,11 @@
 <resources>
     <string-array name="roles">
         <item>Student</item>
-        <item>Mentor</item>
-        <item>Volunteer</item>
+        <item>Adult</item>
     </string-array>
 
     <string-array name="role_slugs">
         <item>stu</item>
         <item>mtr</item>
-        <item>vol</item>
     </string-array>
 </resources>
