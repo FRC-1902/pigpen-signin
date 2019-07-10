@@ -2,12 +2,12 @@ package com.explodingbacon.pigpen.signin.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.explodingbacon.pigpen.signin.R;
 import com.explodingbacon.pigpen.signin.adapters.MemberListAdapter;
@@ -17,6 +17,7 @@ import com.explodingbacon.pigpen.signin.beans.Member;
 import com.explodingbacon.pigpen.signin.fragments.AddMemberFragment;
 import com.explodingbacon.pigpen.signin.fragments.ApiKeyFragment;
 import com.explodingbacon.pigpen.signin.fragments.PunchFragment;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;

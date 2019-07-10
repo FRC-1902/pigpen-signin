@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Dominic Canora" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/actions_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -38,9 +38,9 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Punch In" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/results_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
             app:layout_constraintTop_toBottomOf="@+id/punch_result"
             tools:text="Duration: 4:55"
             tools:visibility="visible" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/divider"
@@ -93,7 +93,7 @@
         app:layout_constraintVertical_bias="0.5"
         tools:visibility="visible" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/totals_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -123,6 +123,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView2"
             tools:text="Build: 00:00:00\nOutreach: 00:00:00" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
