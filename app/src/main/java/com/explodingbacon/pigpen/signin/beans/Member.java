@@ -7,4 +7,5 @@ public class Member {
     String name;
     String position;
     Integer id;
+    Boolean isIn;
 }
