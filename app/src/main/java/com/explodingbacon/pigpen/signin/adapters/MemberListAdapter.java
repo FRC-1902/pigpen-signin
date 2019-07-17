@@ -1,5 +1,6 @@
 package com.explodingbacon.pigpen.signin.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,16 +51,25 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
 
         TextView name;
         Member member;
+        View itemView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this::onClick);
             name = itemView.findViewById(R.id.name);
+            this.itemView = itemView;
         }
 
         public void bind(Member member) {
             this.member = member;
             name.setText(member.getName());
+            if (member.getIsIn()) {
+                itemView.setBackgroundColor(Color.parseColor("#5550b04d"));
+                name.setTextColor(Color.BLACK);
+            } else {
+                itemView.setBackgroundColor(Color.rgb(255, 255, 255));
+                name.setTextColor(Color.BLACK);
+            }
         }
 
         public void onClick(View view) {

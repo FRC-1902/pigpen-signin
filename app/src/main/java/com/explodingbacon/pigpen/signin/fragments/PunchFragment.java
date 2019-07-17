@@ -39,7 +39,7 @@ import okhttp3.Response;
 
 public class PunchFragment extends DialogFragment {
 
-    Activity activity;
+    MainActivity activity;
 
     Member member;
     String secret;
@@ -67,7 +67,7 @@ public class PunchFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setCancelable(true);
 
-        if ((activity = getActivity()) == null) {
+        if ((activity = (MainActivity) getActivity()) == null) {
             dismiss();
         }
 
@@ -207,6 +207,8 @@ public class PunchFragment extends DialogFragment {
 
             actionContainer.setVisibility(View.GONE);
             resultsContainer.setVisibility(View.VISIBLE);
+
+            activity.getMembers();
         });
 
         getStudentHours();
