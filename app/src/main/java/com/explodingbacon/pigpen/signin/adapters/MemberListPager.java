@@ -53,7 +53,7 @@ public class MemberListPager extends FragmentStatePagerAdapter {
         for (Member m : members) {
             if (m.getPosition().equals("stu")) {
                 students.add(m);
-            } else {
+            } else if (m.getPosition().equals("mtr")) {
                 adults.add(m);
             }
         }
