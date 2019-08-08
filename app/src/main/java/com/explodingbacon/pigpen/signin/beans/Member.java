@@ -6,6 +6,7 @@ import lombok.Data;
 public class Member {
     String name;
     String position;
+    Boolean active;
     Integer id;
     Boolean isIn;
 }

@@ -27,7 +27,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
 
     public void setMembers(List<Member> members) {
         this.members = members;
-        notifyDataSetChanged();
     }
 
     @NonNull

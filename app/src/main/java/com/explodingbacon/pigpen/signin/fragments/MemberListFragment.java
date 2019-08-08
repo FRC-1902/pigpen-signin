@@ -29,6 +29,10 @@ public class MemberListFragment extends Fragment {
         return instance;
     }
 
+    public MemberListFragment() {
+        adapter = new MemberListAdapter((MemberListAdapter.OnMemberClickedListener) getActivity());
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +53,14 @@ public class MemberListFragment extends Fragment {
         super.onViewCreated(root, savedInstanceState);
 
         recycler = root.findViewById(R.id.recycler);
-        adapter = new MemberListAdapter((MemberListAdapter.OnMemberClickedListener) getActivity());
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     public void updateMembers(List<Member> members) {
-        getActivity().runOnUiThread(() -> adapter.setMembers(members));
+        adapter.setMembers(members);
+
+        if (getActivity() != null)
+            getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 }
