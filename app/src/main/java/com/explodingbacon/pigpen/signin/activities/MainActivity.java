@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
             new ApiKeyFragment().show(getSupportFragmentManager(), FRAGMENT_API);
         }
 
-        pagerAdapter = new MemberListPager(getSupportFragmentManager());
+        pagerAdapter = new MemberListPager(getSupportFragmentManager(), this);
 
         ViewPager pager = findViewById(R.id.pager);
         TabLayout tabLayout = findViewById(R.id.tabs);

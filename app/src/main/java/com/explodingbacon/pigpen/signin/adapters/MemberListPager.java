@@ -21,15 +21,15 @@ public class MemberListPager extends FragmentPagerAdapter {
     MemberListFragment adultFragment;
     MemberListFragment inactiveFragment;
 
-    public MemberListPager(FragmentManager fm) {
+    public MemberListPager(FragmentManager fm, MemberListAdapter.OnMemberClickedListener listener) {
         super(fm);
         this.students = new ArrayList<>();
         this.adults = new ArrayList<>();
         this.inactive = new ArrayList<>();
 
-        this.studentFragment = MemberListFragment.getInstance(students);
-        this.adultFragment = MemberListFragment.getInstance(adults);
-        this.inactiveFragment = MemberListFragment.getInstance(inactive);
+        this.studentFragment = MemberListFragment.getInstance(students, listener);
+        this.adultFragment = MemberListFragment.getInstance(adults, listener);
+        this.inactiveFragment = MemberListFragment.getInstance(inactive, listener);
     }
 
     @Override

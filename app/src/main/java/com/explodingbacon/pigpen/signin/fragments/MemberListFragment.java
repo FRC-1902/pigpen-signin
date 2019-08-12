@@ -23,14 +23,11 @@ public class MemberListFragment extends Fragment {
     RecyclerView recycler;
     MemberListAdapter adapter;
 
-    public static MemberListFragment getInstance(List<Member> members) {
+    public static MemberListFragment getInstance(List<Member> members, MemberListAdapter.OnMemberClickedListener listener) {
         MemberListFragment instance = new MemberListFragment();
         instance.members = members;
+        instance.adapter = new MemberListAdapter(listener);
         return instance;
-    }
-
-    public MemberListFragment() {
-        adapter = new MemberListAdapter((MemberListAdapter.OnMemberClickedListener) getActivity());
     }
 
     @Override
