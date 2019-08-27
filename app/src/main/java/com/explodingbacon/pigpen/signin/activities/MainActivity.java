@@ -17,6 +17,7 @@ import com.explodingbacon.pigpen.signin.beans.Member;
 import com.explodingbacon.pigpen.signin.fragments.AddMemberFragment;
 import com.explodingbacon.pigpen.signin.fragments.ApiKeyFragment;
 import com.explodingbacon.pigpen.signin.fragments.PunchFragment;
+import com.explodingbacon.pigpen.signin.utils.TeambuildingUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
@@ -62,11 +63,14 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
         pager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(pager);
 
+        TeambuildingUtils.init(this);
+
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 getMembers();
+                TeambuildingUtils.getInstance().refresh();
             }
         }, 0, TimeUnit.MINUTES.toMillis(1));
     }

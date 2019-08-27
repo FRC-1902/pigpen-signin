@@ -1,6 +1,5 @@
 package com.explodingbacon.pigpen.signin.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,7 +21,9 @@ import com.explodingbacon.pigpen.signin.activities.MainActivity;
 import com.explodingbacon.pigpen.signin.api.models.HoursResponse;
 import com.explodingbacon.pigpen.signin.api.models.PunchResponse;
 import com.explodingbacon.pigpen.signin.api.models.SignedInResponse;
+import com.explodingbacon.pigpen.signin.api.models.TeambuildingResponse;
 import com.explodingbacon.pigpen.signin.beans.Member;
+import com.explodingbacon.pigpen.signin.utils.TeambuildingUtils;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,11 @@ public class PunchFragment extends DialogFragment {
     View divider;
     View totalsContainer;
 
-    Button doPunchButton;
+    View tbInstructions;
+    TextView tbQuestion;
+    View tbOrText;
+    Button punchButtonOne;
+    Button punchButtonTwo;
 
     TextView memberName;
     TextView punchResults;
@@ -79,7 +84,11 @@ public class PunchFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
 
-        doPunchButton = getDialog().findViewById(R.id.do_punch);
+        tbInstructions = getDialog().findViewById(R.id.teambuilding_instructions);
+        tbQuestion = getDialog().findViewById(R.id.teambuilding_question);
+        tbOrText = getDialog().findViewById(R.id.tb_or);
+        punchButtonOne = getDialog().findViewById(R.id.do_punch_one);
+        punchButtonTwo = getDialog().findViewById(R.id.do_punch_two);
 
         actionContainer = getDialog().findViewById(R.id.actions_container);
         resultsContainer = getDialog().findViewById(R.id.results_container);
@@ -91,7 +100,8 @@ public class PunchFragment extends DialogFragment {
         punchDuration = getDialog().findViewById(R.id.duration);
         totals = getDialog().findViewById(R.id.totals);
 
-        doPunchButton.setOnClickListener((v) -> doPunch());
+        punchButtonOne.setOnClickListener(this::doPunch);
+        punchButtonTwo.setOnClickListener(this::doPunch);
         memberName.setText(member.getName());
 
         getStudentHours();
@@ -110,9 +120,10 @@ public class PunchFragment extends DialogFragment {
         return dialog;
     }
 
-    private void doPunch() {
+    private void doPunch(View v) {
         OkHttpClient client = new OkHttpClient();
 
+        //Do actual punch
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("secret", secret)
@@ -142,6 +153,38 @@ public class PunchFragment extends DialogFragment {
                 }
             }
         });
+
+        //Do teambuilding
+        TeambuildingResponse tConfig = TeambuildingUtils.getInstance().getConfig();
+
+        if (tConfig.getActive() && (v == punchButtonOne || v == punchButtonTwo)) {
+            RequestBody tbRequestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("secret", secret)
+                    .addFormDataPart("member", "" + member.getId())
+                    .addFormDataPart("question", tConfig.getId())
+                    .addFormDataPart("response", v == punchButtonOne ? "a" : "b")
+                    .build();
+
+            Request tbRequest = new Request.Builder()
+                    .url(getString(R.string.api_base) + getString(R.string.api_teambuilding_respond))
+                    .post(tbRequestBody)
+                    .build();
+
+            client.newCall(tbRequest).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Log.e("Teambuilding Submission", "Error submitting teambuilding", e);
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() != 200) {
+                        Log.e("Teambuilding Submission", "Non-200 response submitting teambuilding: " + response.toString());
+                    }
+                }
+            });
+        }
     }
 
     private void getStudentHours() {
@@ -163,7 +206,7 @@ public class PunchFragment extends DialogFragment {
                     HoursResponse hoursResponse = new Gson().fromJson(response.body().string(), HoursResponse.class);
                     updateUiWithHoursResponse(hoursResponse);
                 } else {
-                    Log.e("Hours Reponse", "Non-200 response: " + response.toString());
+                    Log.e("Hours Response", "Non-200 response: " + response.toString());
                 }
             }
         });
@@ -188,7 +231,7 @@ public class PunchFragment extends DialogFragment {
                     SignedInResponse signedInResponse = new Gson().fromJson(response.body().string(), SignedInResponse.class);
                     updateUiWithSignedInResponse(signedInResponse);
                 } else {
-                    Log.e("Hours Reponse", "Non-200 response: " + response.toString());
+                    Log.e("Punch Status Response", "Non-200 response: " + response.toString());
                 }
             }
         });
@@ -224,8 +267,23 @@ public class PunchFragment extends DialogFragment {
 
     private void updateUiWithSignedInResponse(SignedInResponse signedInResponse) {
         activity.runOnUiThread(() -> {
-            doPunchButton.setText(signedInResponse.getIsSignedIn() ? "Punch Out" : "Punch In");
-            actionContainer.setVisibility(View.VISIBLE);
+            TeambuildingResponse tConfig = TeambuildingUtils.getInstance().getConfig();
+
+            if (tConfig != null && tConfig.getActive() && !signedInResponse.getIsSignedIn()) {
+                tbQuestion.setText(tConfig.getQuestion());
+                punchButtonOne.setText(tConfig.getOption_one());
+                punchButtonTwo.setText(tConfig.getOption_two());
+
+                tbInstructions.setVisibility(View.VISIBLE);
+                tbQuestion.setVisibility(tConfig.getQuestion() == null || tConfig.getQuestion().trim().isEmpty() ? View.GONE : View.VISIBLE);
+                tbOrText.setVisibility(View.VISIBLE);
+                punchButtonTwo.setVisibility(View.VISIBLE);
+                actionContainer.setVisibility(View.VISIBLE);
+            } else {
+                punchButtonOne.setText(signedInResponse.getIsSignedIn() ? "Punch Out" : "Punch In");
+                punchButtonTwo.setVisibility(View.GONE);
+                actionContainer.setVisibility(View.VISIBLE);
+            }
         });
     }
 }
