@@ -78,6 +78,7 @@ public class PunchFragment extends DialogFragment {
 
         SharedPreferences prefs = activity.getSharedPreferences(MainActivity.PREFS_REPO_NAME, Context.MODE_PRIVATE);
         secret = prefs.getString(MainActivity.PREFS_KEY_APIKEY, null);
+        Log.i("API Key", secret);
     }
 
     @Override

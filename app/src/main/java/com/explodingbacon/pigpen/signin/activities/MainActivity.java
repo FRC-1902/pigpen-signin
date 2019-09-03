@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
 
         prefs = getSharedPreferences(PREFS_REPO_NAME, MODE_PRIVATE);
         if (!prefs.contains(PREFS_KEY_APIKEY)) {
-            new ApiKeyFragment().show(getSupportFragmentManager(), FRAGMENT_API);
+            new ApiKeyFragment(this).show(getSupportFragmentManager(), FRAGMENT_API);
         }
 
         pagerAdapter = new MemberListPager(getSupportFragmentManager(), this);
