@@ -43,6 +43,7 @@ public class PunchFragment extends DialogFragment {
     MainActivity activity;
 
     Member member;
+    SignedInResponse signedInResponse;
     String secret;
 
     View actionContainer;
@@ -155,6 +156,8 @@ public class PunchFragment extends DialogFragment {
             }
         });
 
+        if (signedInResponse.getIsSignedIn()) return;
+
         //Do teambuilding
         TeambuildingResponse tConfig = TeambuildingUtils.getInstance().getConfig();
 
@@ -229,7 +232,7 @@ public class PunchFragment extends DialogFragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
-                    SignedInResponse signedInResponse = new Gson().fromJson(response.body().string(), SignedInResponse.class);
+                    signedInResponse = new Gson().fromJson(response.body().string(), SignedInResponse.class);
                     updateUiWithSignedInResponse(signedInResponse);
                 } else {
                     Log.e("Punch Status Response", "Non-200 response: " + response.toString());
