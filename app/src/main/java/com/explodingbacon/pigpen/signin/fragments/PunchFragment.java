@@ -45,6 +45,7 @@ public class PunchFragment extends DialogFragment {
     Member member;
     SignedInResponse signedInResponse;
     String secret;
+    Boolean didPunch = false;
 
     View actionContainer;
     View resultsContainer;
@@ -123,6 +124,9 @@ public class PunchFragment extends DialogFragment {
     }
 
     private void doPunch(View v) {
+        if (didPunch) return;
+        didPunch = true;
+
         OkHttpClient client = new OkHttpClient();
 
         //Do actual punch
