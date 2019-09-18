@@ -9,4 +9,5 @@ public class PunchResponse {
     String member;
     String time;
     String duration;
+    String error;
 }

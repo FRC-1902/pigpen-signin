@@ -243,8 +243,12 @@ public class PunchFragment extends DialogFragment {
 
     private void updateUiWithPunchResponse(PunchResponse response) {
         activity.runOnUiThread(() -> {
-            punchResults.setText(String.format(getString(R.string.punch_summary_format),
-                    response.getMember(), response.getPunch(), response.getTime()));
+            if (response.getSuccess()) {
+                punchResults.setText(String.format(getString(R.string.punch_summary_format),
+                        response.getMember(), response.getPunch(), response.getTime()));
+            } else {
+                punchResults.setText(response.getError());
+            }
 
             if (response.getDuration() != null) {
                 punchDuration.setText(String.format(getString(R.string.punch_duration_format),
