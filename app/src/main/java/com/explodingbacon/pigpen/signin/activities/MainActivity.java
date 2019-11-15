@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements MemberListAdapter
                 getMembers();
                 TeambuildingUtils.getInstance().refresh();
             }
-        }, 0, TimeUnit.MINUTES.toMillis(1));
+        }, 0, TimeUnit.SECONDS.toMillis(10));
     }
 
     @Override
