@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pigpen Signin</string>
 
-    <string name="api_base">http://pen.explodingbacon.com</string>
+    <string name="api_base">https://pen.explodingbacon.com</string>
     <string name="api_token_exchange">/api/token/get</string>
     <string name="api_do_punch">/api/punch</string>
     <string name="api_member_list">/api/members/all</string>
