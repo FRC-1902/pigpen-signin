@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class PunchFragment extends DialogFragment {
     SignedInResponse signedInResponse;
     String secret;
     Boolean didPunch = false;
+    Boolean isSignedIn = false;
 
     View actionContainer;
     View resultsContainer;
@@ -55,6 +57,7 @@ public class PunchFragment extends DialogFragment {
     View tbInstructions;
     TextView tbQuestion;
     View tbOrText;
+    EditText temperatureView;
     Button punchButtonOne;
     Button punchButtonTwo;
 
@@ -90,6 +93,7 @@ public class PunchFragment extends DialogFragment {
         tbInstructions = getDialog().findViewById(R.id.teambuilding_instructions);
         tbQuestion = getDialog().findViewById(R.id.teambuilding_question);
         tbOrText = getDialog().findViewById(R.id.tb_or);
+        temperatureView = getDialog().findViewById(R.id.punch_temp);
         punchButtonOne = getDialog().findViewById(R.id.do_punch_one);
         punchButtonTwo = getDialog().findViewById(R.id.do_punch_two);
 
@@ -116,7 +120,7 @@ public class PunchFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = new AlertDialog.Builder(activity)
                 .setCancelable(true)
-                .setView(R.layout.fragment_punch)
+                .setView(R.layout.fragment_punch_covid)
                 .setNegativeButton("Close", null)
                 .create();
 
@@ -124,6 +128,28 @@ public class PunchFragment extends DialogFragment {
     }
 
     private void doPunch(View v) {
+        String tempstr = temperatureView.getText().toString();
+
+        if (!isSignedIn) {
+
+            if (!tempstr.trim().isEmpty()) {
+                double temp = Double.parseDouble(tempstr);
+
+                if (temp < 90) {
+                    Toast.makeText(activity, "Please double check your temperature.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (temp > 100) {
+                    Toast.makeText(activity, "Please double check your temperature. If you have a fever over 100, you may not attend build.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } else {
+                Toast.makeText(activity, "Please take and enter your temperature", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         if (didPunch) return;
         didPunch = true;
 
@@ -134,6 +160,7 @@ public class PunchFragment extends DialogFragment {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("secret", secret)
                 .addFormDataPart("member", "" + member.getId())
+                .addFormDataPart("temperature", tempstr)
                 .build();
 
         Request request = new Request.Builder()
@@ -237,6 +264,7 @@ public class PunchFragment extends DialogFragment {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200) {
                     signedInResponse = new Gson().fromJson(response.body().string(), SignedInResponse.class);
+                    isSignedIn = signedInResponse.getIsSignedIn();
                     updateUiWithSignedInResponse(signedInResponse);
                 } else {
                     Log.e("Punch Status Response", "Non-200 response: " + response.toString());
@@ -294,6 +322,7 @@ public class PunchFragment extends DialogFragment {
             } else {
                 punchButtonOne.setText(signedInResponse.getIsSignedIn() ? "Punch Out" : "Punch In");
                 punchButtonTwo.setVisibility(View.GONE);
+                temperatureView.setVisibility(signedInResponse.getIsSignedIn() ? View.GONE : View.VISIBLE);
                 actionContainer.setVisibility(View.VISIBLE);
             }
         });
